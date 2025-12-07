@@ -7,21 +7,42 @@ function solve(input: string) {
   for (const line of input.split("\n")) {
     const bank = line.split("").map(Number);
 
-    let maxIndex = -1;
-    for (let i = 0; i < bank.length - 1; i++) {
-      if (maxIndex === -1 || bank[maxIndex] < bank[i]) {
-        maxIndex = i;
+    const maxIndexInRange = (from: number, to: number) => {
+      // console.log(
+      //   "range=[",
+      //   bank.slice(from, to).join(""),
+      //   "] from [",
+      //   line,
+      //   "] len=",
+      //   bank.length,
+      // );
+      let maxIndex_ = -1;
+      for (let j = from; j < to; j++) {
+        if (maxIndex_ === -1 || bank[maxIndex_] < bank[j]) {
+          maxIndex_ = j;
+        }
       }
-    }
+      return maxIndex_;
+    };
 
-    let unitIndex = -1;
-    for (let j = maxIndex + 1; j < bank.length; j++) {
-      if (unitIndex === -1 || bank[unitIndex] < bank[j]) {
-        unitIndex = j;
-      }
-    }
+    const calculateBankPower = (n: number) =>
+      Array.from({ length: n }).reduce(
+        ({ power, lastIndex }, _, i) => {
+          const maxIndex = maxIndexInRange(
+            lastIndex + 1,
+            bank.length - (n - i - 1),
+          );
+          const nextPower = power + 10 ** (n - 1 - i) * bank[maxIndex];
+          return {
+            power: nextPower,
+            lastIndex: maxIndex,
+          };
+        },
+        { power: 0, lastIndex: -1 },
+      ).power;
 
-    part1 += bank[maxIndex] * 10 + bank[unitIndex];
+    part1 += calculateBankPower(2);
+    part2 += calculateBankPower(12);
   }
 
   console.log("Anwser 1:", part1);
