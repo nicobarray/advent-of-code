@@ -97,4 +97,5 @@ export const Brray = {
   countChar: (char: string) => (acc: number, curr: string): number => {
     return (acc ?? 0) + (curr === char ? 1 : 0);
   },
+  sum: (a: number, b: number): number => (a ?? 0) + b,
 };
