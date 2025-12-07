@@ -81,6 +81,15 @@ export function makeGrid(input: string) {
         [x - 1, y - 1],
       ].map(([x, y]) => grid.data[key(x, y)]);
     },
+    setMany(indexes: [number, number][], value: string) {
+      indexes.forEach(([x, y]) => {
+        if (x < 0 || y < 0 || x >= grid.width || y >= grid.height) {
+          return;
+        }
+
+        grid.data[key(x, y)] = value;
+      });
+    },
   };
 }
 
