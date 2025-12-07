@@ -8,14 +8,6 @@ function solve(input: string) {
     const bank = line.split("").map(Number);
 
     const maxIndexInRange = (from: number, to: number) => {
-      // console.log(
-      //   "range=[",
-      //   bank.slice(from, to).join(""),
-      //   "] from [",
-      //   line,
-      //   "] len=",
-      //   bank.length,
-      // );
       let maxIndex_ = -1;
       for (let j = from; j < to; j++) {
         if (maxIndex_ === -1 || bank[maxIndex_] < bank[j]) {
