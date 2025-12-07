@@ -98,4 +98,24 @@ export const Brray = {
     return (acc ?? 0) + (curr === char ? 1 : 0);
   },
   sum: (a: number, b: number): number => (a ?? 0) + b,
+  mult: (a: number, b: number): number => (a ?? 1) * b,
+  rotate90: (array: unknown[][]) => {
+    const width = array.length;
+    const height = array[0].length;
+
+    const res = Array.from({ length: height }).map((_) =>
+      Array.from({ length: width })
+    );
+
+    console.log("rotate", array.length, "x", array[0].length);
+    console.log("=>", res.length, "x", res[0].length);
+
+    for (let x = 0; x < array.length; x++) {
+      for (let y = 0; y < array[0].length; y++) {
+        res[y][x] = array[x][y];
+      }
+    }
+
+    return res;
+  },
 };
