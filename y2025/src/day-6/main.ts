@@ -23,7 +23,7 @@ function solve(input: string) {
   const seperatorIndexes: number[] = [];
   grid.forEach((x, y, cell) => {
     if (y !== 0 || cell !== " ") return;
-    if (grid.down(x, y).join("").trim() === "") {
+    if (grid.downCells(x, y).join("").trim() === "") {
       seperatorIndexes.push(x);
     }
   });

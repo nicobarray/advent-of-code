@@ -48,6 +48,19 @@ export function makeGrid(input: string) {
 
   return {
     grid,
+    render(mask?: { data: Set<string>; char: string }) {
+      for (let y = 0; y < grid.height; y++) {
+        let buff = "";
+        for (let x = 0; x < grid.width; x++) {
+          if (mask?.data.has(x + "_" + y)) {
+            buff += mask.char;
+          } else {
+            buff += grid.data[key(x, y)];
+          }
+        }
+        console.log(buff);
+      }
+    },
     forEach(callback: (x: number, y: number, cell: string) => void) {
       for (let y = 0; y < grid.height; y++) {
         for (let x = 0; x < grid.width; x++) {
@@ -55,8 +68,21 @@ export function makeGrid(input: string) {
         }
       }
     },
+    find(predicate: (x: number, y: number, cell: string) => boolean) {
+      for (let y = 0; y < grid.height; y++) {
+        for (let x = 0; x < grid.width; x++) {
+          const cell = grid.data[key(x, y)];
+          if (predicate(x, y, cell)) {
+            return [x, y, cell] as const;
+          }
+        }
+      }
+    },
+    isOutOfBound(x: number, y: number) {
+      return x < 0 || y < 0 || x >= grid.width || y >= grid.height;
+    },
     n4(x: number, y: number) {
-      if (x < 0 || y < 0 || x >= grid.width || y >= grid.height) {
+      if (this.isOutOfBound(x, y)) {
         return [];
       }
       return [
@@ -67,7 +93,7 @@ export function makeGrid(input: string) {
       ].map(([x, y]) => grid.data[key(x, y)]);
     },
     n8(x: number, y: number) {
-      if (x < 0 || y < 0 || x >= grid.width || y >= grid.height) {
+      if (this.isOutOfBound(x, y)) {
         return [];
       }
       return [
@@ -81,17 +107,28 @@ export function makeGrid(input: string) {
         [x - 1, y - 1],
       ].map(([x, y]) => grid.data[key(x, y)]);
     },
-    down(x: number, y: number) {
-      return Array.from({ length: grid.height })
+    downIndexes(x: number, y: number) {
+      return Array.from({ length: grid.height - y })
         .map((_, dy) => {
-          return this.get(x, y + (dy + 1));
-        }).filter((cell) => cell != null);
+          return [x, y + (dy + 1)] as const;
+        });
+    },
+    downCells(x: number, y: number) {
+      return this.downIndexes(x, y).map(([x, y]) => this.get(x, y));
+    },
+    down(x: number, y: number) {
+      return this.downIndexes(x, y).map(([x, y]) =>
+        [x, y, this.get(x, y)] as const
+      );
     },
     get(x: number, y: number) {
       if (x < 0 || y < 0 || x >= grid.width || y >= grid.height) {
         return undefined;
       }
       return grid.data[key(x, y)];
+    },
+    set(x: number, y: number, value: string) {
+      grid.data[key(x, y)] = value;
     },
     setMany(indexes: [number, number][], value: string) {
       indexes.forEach(([x, y]) => {
