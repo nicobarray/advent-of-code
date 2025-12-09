@@ -81,6 +81,18 @@ export function makeGrid(input: string) {
         [x - 1, y - 1],
       ].map(([x, y]) => grid.data[key(x, y)]);
     },
+    down(x: number, y: number) {
+      return Array.from({ length: grid.height })
+        .map((_, dy) => {
+          return this.get(x, y + (dy + 1));
+        }).filter((cell) => cell != null);
+    },
+    get(x: number, y: number) {
+      if (x < 0 || y < 0 || x >= grid.width || y >= grid.height) {
+        return undefined;
+      }
+      return grid.data[key(x, y)];
+    },
     setMany(indexes: [number, number][], value: string) {
       indexes.forEach(([x, y]) => {
         if (x < 0 || y < 0 || x >= grid.width || y >= grid.height) {
@@ -107,14 +119,24 @@ export const Brray = {
       Array.from({ length: width })
     );
 
-    console.log("rotate", array.length, "x", array[0].length);
-    console.log("=>", res.length, "x", res[0].length);
-
     for (let x = 0; x < array.length; x++) {
       for (let y = 0; y < array[0].length; y++) {
         res[y][x] = array[x][y];
       }
     }
+
+    return res;
+  },
+  splitN(str: string, indexes: number[]) {
+    const res: string[] = [];
+
+    let prevIndex = 0;
+    for (let i = 0; i < indexes.length; i++) {
+      res.push(str.slice(prevIndex, indexes[i]));
+      prevIndex = indexes[i] + 1;
+    }
+
+    res.push(str.slice(prevIndex));
 
     return res;
   },
